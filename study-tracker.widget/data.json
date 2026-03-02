@@ -1,0 +1,49 @@
+{
+  "courses": [
+    {
+      "id": "cs101",
+      "name": "Computer Science 101",
+      "color": ["#00f2fe", "#4facfe"],
+      "tasks": [
+        { "id": "t1", "text": "Read Chapter 5 - Data Structures", "done": false },
+        { "id": "t2", "text": "Complete Lab 3 - Linked Lists", "done": true },
+        { "id": "t3", "text": "Study for Midterm Exam", "done": false },
+        { "id": "t4", "text": "Submit Assignment 4", "done": true }
+      ]
+    },
+    {
+      "id": "math201",
+      "name": "Linear Algebra",
+      "color": ["#a855f7", "#ec4899"],
+      "tasks": [
+        { "id": "t5", "text": "Practice eigenvalue problems", "done": false },
+        { "id": "t6", "text": "Watch lecture 12 recording", "done": false },
+        { "id": "t7", "text": "Complete problem set 6", "done": true }
+      ]
+    },
+    {
+      "id": "phys150",
+      "name": "Physics 150",
+      "color": ["#f97316", "#ef4444"],
+      "tasks": [
+        { "id": "t8", "text": "Review Newton's Laws notes", "done": true },
+        { "id": "t9", "text": "Finish lab report - Friction", "done": false },
+        { "id": "t10", "text": "Prepare for quiz 4", "done": false }
+      ]
+    },
+    {
+      "id": "eng200",
+      "name": "English Literature",
+      "color": ["#3b82f6", "#c084fc"],
+      "tasks": [
+        { "id": "t11", "text": "Read 'The Great Gatsby' Ch. 7-9", "done": false },
+        { "id": "t12", "text": "Write essay outline", "done": true },
+        { "id": "t13", "text": "Peer review partner's draft", "done": false }
+      ]
+    }
+  ],
+  "streakDays": 5,
+  "xp": 340,
+  "level": 3,
+  "achievements": ["first_task", "streak_3", "course_added"]
+}

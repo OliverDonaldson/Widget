@@ -1,0 +1,8 @@
+{
+  "name": "Study Tracker",
+  "description": "An interactive desktop study to-do list with progress bars, a growing knowledge tree, XP system, and streak tracking. Built for Übersicht.",
+  "author": "Oliver Donaldson",
+  "version": "1.0.0",
+  "compatibility": "Übersicht >=1.6",
+  "refreshFrequency": false
+}
