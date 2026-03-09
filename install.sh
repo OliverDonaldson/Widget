@@ -11,7 +11,7 @@ WIDGET_NAME="study-tracker.widget"
 UBERSICHT_DIR="$HOME/Library/Application Support/Übersicht/widgets"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-echo "📖 Study Tracker Widget Installer"
+echo "Study Tracker Widget Installer"
 echo "──────────────────────────────────"
 
 # Check if Übersicht widgets dir exists
@@ -24,12 +24,23 @@ fi
 
 # Copy widget
 if [ -d "$UBERSICHT_DIR/$WIDGET_NAME" ]; then
-    echo "⚠️  Widget already exists. Backing up to ${WIDGET_NAME}.backup"
-    mv "$UBERSICHT_DIR/$WIDGET_NAME" "$UBERSICHT_DIR/${WIDGET_NAME}.backup.$(date +%s)"
+    echo "⚠️  Widget already exists. Updating code only (keeping your data)..."
+    # Preserve existing data.json
+    if [ -f "$UBERSICHT_DIR/$WIDGET_NAME/data.json" ]; then
+        cp "$UBERSICHT_DIR/$WIDGET_NAME/data.json" /tmp/study-tracker-data-backup.json
+    fi
+    rm -rf "$UBERSICHT_DIR/$WIDGET_NAME"
 fi
 
 echo "📦 Copying widget to Übersicht..."
 cp -R "$SCRIPT_DIR/$WIDGET_NAME" "$UBERSICHT_DIR/$WIDGET_NAME"
+
+# Restore saved data if it existed
+if [ -f /tmp/study-tracker-data-backup.json ]; then
+    cp /tmp/study-tracker-data-backup.json "$UBERSICHT_DIR/$WIDGET_NAME/data.json"
+    rm /tmp/study-tracker-data-backup.json
+    echo "📄 Restored your existing task data."
+fi
 
 echo "✅ Installed successfully!"
 echo ""

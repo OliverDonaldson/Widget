@@ -8,10 +8,11 @@
  * Built with: React JSX for Übersicht
  */
 
-import { css, run } from "uebersicht";
+import { React, css, run } from "uebersicht";
 
 // ─── CONFIG ──────────────────────────────────────────────────────────────────
 const WIDGET_DIR = "study-tracker.widget";
+const WIDGET_ID = "study-tracker-widget-index-jsx";
 const DATA_FILE = `Library/Application\\ Support/Übersicht/widgets/${WIDGET_DIR}/data.json`;
 
 // ─── REFRESH ─────────────────────────────────────────────────────────────────
@@ -26,8 +27,8 @@ export const className = css`
 
   position: fixed;
   top: 30px;
-  left: 30px;
-  width: 420px;
+  right: 30px;
+  width: 300px;
   max-height: calc(100vh - 60px);
   overflow-y: auto;
   font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
@@ -58,74 +59,32 @@ function xpForLevel(lvl) { return lvl * 150; }
 function ProgressBar({ percent, gradient, label }) {
   const clamp = Math.min(100, Math.max(0, percent));
   return (
-    <div style={{ marginBottom: 6 }}>
+    <div style={{ marginBottom: 4 }}>
       {label && (
-        <div style={{ fontSize: 11, color: "#94a3b8", marginBottom: 4 }}>
-          {label}
+        <div style={{ fontSize: 10, color: "#94a3b8", marginBottom: 2, display: "flex", justifyContent: "space-between" }}>
+          <span>{label}</span>
+          <span style={{ fontWeight: 600, color: gradient[1] }}>{Math.round(clamp)}%</span>
         </div>
       )}
       <div
         style={{
           position: "relative",
-          height: 18,
+          height: 6,
           background: "rgba(255,255,255,0.08)",
-          borderRadius: 12,
-          overflow: "visible",
-          border: "1px solid rgba(255,255,255,0.1)",
+          borderRadius: 4,
+          overflow: "hidden",
+          border: "1px solid rgba(255,255,255,0.06)",
         }}
       >
         <div
           style={{
             width: `${clamp}%`,
             height: "100%",
-            borderRadius: 12,
+            borderRadius: 4,
             background: `linear-gradient(90deg, ${gradient[0]}, ${gradient[1]})`,
             transition: "width 0.6s cubic-bezier(.4,0,.2,1)",
-            boxShadow: `0 0 12px ${gradient[0]}55`,
           }}
         />
-        {/* Thumb indicator */}
-        <div
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: `${clamp}%`,
-            transform: "translate(-50%, -50%)",
-            width: 22,
-            height: 22,
-            borderRadius: "50%",
-            background: "#1e293b",
-            border: `2.5px solid ${gradient[1]}`,
-            boxShadow: `0 0 8px ${gradient[1]}66`,
-            display: clamp > 0 ? "block" : "none",
-          }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: 8,
-              height: 8,
-              borderRadius: "50%",
-              background: gradient[1],
-            }}
-          />
-        </div>
-        {/* Percentage label */}
-        <div
-          style={{
-            position: "absolute",
-            right: 0,
-            top: 24,
-            fontSize: 11,
-            fontWeight: 600,
-            color: gradient[1],
-          }}
-        >
-          {Math.round(clamp)}%
-        </div>
       </div>
     </div>
   );
@@ -144,8 +103,8 @@ function KnowledgeTree({ percent }) {
   const flowerColor = "#f472b6";
 
   return (
-    <div style={{ textAlign: "center", padding: "10px 0" }}>
-      <svg width="120" height="120" viewBox="0 0 120 120">
+    <div style={{ textAlign: "center", padding: "4px 0" }}>
+      <svg width="70" height="70" viewBox="0 0 120 120">
         {/* Ground */}
         <ellipse cx="60" cy="110" rx="40" ry="6" fill="#365314" opacity="0.5" />
         {/* Trunk */}
@@ -202,20 +161,20 @@ function KnowledgeTree({ percent }) {
           </>
         )}
       </svg>
-      <div style={{ fontSize: 11, color: "#94a3b8", marginTop: 2 }}>
-        {stage === 0 && "🌱 Just sprouted — keep going!"}
-        {stage === 1 && "🌿 Growing nicely..."}
-        {stage === 2 && "🌳 Branching out!"}
-        {stage === 3 && "🌲 Strong and tall!"}
-        {stage === 4 && "🌸 In full bloom!"}
-        {stage === 5 && "🏆 Magnificent! All complete!"}
+      <div style={{ fontSize: 9, color: "#94a3b8", marginTop: 1 }}>
+        {stage === 0 && "🌱 Sprouted"}
+        {stage === 1 && "🌿 Growing"}
+        {stage === 2 && "🌳 Branching"}
+        {stage === 3 && "🌲 Strong"}
+        {stage === 4 && "🌸 Blooming"}
+        {stage === 5 && "🏆 Complete!"}
       </div>
     </div>
   );
 }
 
 // ─── COMPONENT: Streak & XP Header ──────────────────────────────────────────
-function StatsHeader({ streakDays, xp, level }) {
+function StatsHeader({ xp, level }) {
   const xpNeeded = xpForLevel(level + 1);
   const xpPercent = (xp / xpNeeded) * 100;
   return (
@@ -224,41 +183,35 @@ function StatsHeader({ streakDays, xp, level }) {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        padding: "8px 0",
+        padding: "4px 0",
         borderBottom: "1px solid rgba(255,255,255,0.08)",
-        marginBottom: 10,
+        marginBottom: 6,
       }}
     >
-      <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
+      <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
         <div style={{ textAlign: "center" }}>
-          <div style={{ fontSize: 20 }}>🔥</div>
-          <div style={{ fontSize: 11, fontWeight: 700, color: "#fb923c" }}>
-            {streakDays} day{streakDays !== 1 ? "s" : ""}
-          </div>
-        </div>
-        <div style={{ textAlign: "center" }}>
-          <div style={{ fontSize: 20 }}>⚡</div>
-          <div style={{ fontSize: 11, fontWeight: 700, color: "#facc15" }}>
+          <div style={{ fontSize: 16 }}>⚡</div>
+          <div style={{ fontSize: 10, fontWeight: 700, color: "#facc15" }}>
             {xp} XP
           </div>
         </div>
         <div style={{ textAlign: "center" }}>
-          <div style={{ fontSize: 20 }}>🎖️</div>
-          <div style={{ fontSize: 11, fontWeight: 700, color: "#a78bfa" }}>
+          <div style={{ fontSize: 16 }}>🎖️</div>
+          <div style={{ fontSize: 10, fontWeight: 700, color: "#a78bfa" }}>
             Lvl {level}
           </div>
         </div>
       </div>
-      <div style={{ width: 90 }}>
-        <div style={{ fontSize: 9, color: "#64748b", textAlign: "right", marginBottom: 2 }}>
+      <div style={{ width: 80 }}>
+        <div style={{ fontSize: 8, color: "#64748b", textAlign: "right", marginBottom: 1 }}>
           {xp}/{xpNeeded} XP
         </div>
-        <div style={{ height: 6, background: "rgba(255,255,255,0.08)", borderRadius: 4 }}>
+        <div style={{ height: 4, background: "rgba(255,255,255,0.08)", borderRadius: 3 }}>
           <div
             style={{
               width: `${Math.min(xpPercent, 100)}%`,
               height: "100%",
-              borderRadius: 4,
+              borderRadius: 3,
               background: "linear-gradient(90deg, #facc15, #f97316)",
             }}
           />
@@ -271,9 +224,6 @@ function StatsHeader({ streakDays, xp, level }) {
 // ─── COMPONENT: Achievement Badges ───────────────────────────────────────────
 const BADGE_MAP = {
   first_task: { icon: "✅", label: "First Task" },
-  streak_3: { icon: "🔥", label: "3-Day Streak" },
-  streak_7: { icon: "💪", label: "7-Day Streak" },
-  course_added: { icon: "📚", label: "Course Added" },
   level_5: { icon: "🏅", label: "Level 5" },
   all_done: { icon: "🏆", label: "All Complete" },
   ten_tasks: { icon: "🎯", label: "10 Tasks Done" },
@@ -282,7 +232,7 @@ const BADGE_MAP = {
 function Badges({ achievements }) {
   if (!achievements || achievements.length === 0) return null;
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: 6, margin: "6px 0 10px" }}>
+    <div style={{ display: "flex", flexWrap: "wrap", gap: 4, margin: "4px 0 6px" }}>
       {achievements.map((a) => {
         const badge = BADGE_MAP[a] || { icon: "⭐", label: a };
         return (
@@ -291,9 +241,9 @@ function Badges({ achievements }) {
             title={badge.label}
             style={{
               background: "rgba(255,255,255,0.06)",
-              borderRadius: 8,
-              padding: "3px 8px",
-              fontSize: 11,
+              borderRadius: 6,
+              padding: "2px 6px",
+              fontSize: 9,
               display: "flex",
               alignItems: "center",
               gap: 4,
@@ -310,10 +260,11 @@ function Badges({ achievements }) {
 }
 
 // ─── COMPONENT: Single Course Card ───────────────────────────────────────────
-function CourseCard({ course, onToggle, onAddTask, onDeleteTask }) {
+function CourseCard({ course, onToggle, onAddTask, onDeleteTask, onRenameTask, onCollapseToggle, onDeleteCourse }) {
   const done = course.tasks.filter((t) => t.done).length;
   const total = course.tasks.length;
   const percent = total > 0 ? (done / total) * 100 : 0;
+  const collapsed = course.collapsed || false;
 
   return (
     <div
@@ -321,26 +272,64 @@ function CourseCard({ course, onToggle, onAddTask, onDeleteTask }) {
         background: "rgba(15, 23, 42, 0.85)",
         backdropFilter: "blur(20px)",
         WebkitBackdropFilter: "blur(20px)",
-        borderRadius: 16,
-        padding: 16,
-        marginBottom: 12,
+        borderRadius: 12,
+        padding: 10,
+        marginBottom: 8,
         border: "1px solid rgba(255,255,255,0.06)",
         boxShadow: "0 4px 24px rgba(0,0,0,0.3)",
       }}
     >
-      {/* Course header */}
+      {/* Course header — click to collapse/expand */}
       <div
+        onClick={() => onCollapseToggle(course.id)}
         style={{
-          fontSize: 14,
-          fontWeight: 700,
-          marginBottom: 10,
-          background: `linear-gradient(90deg, ${course.color[0]}, ${course.color[1]})`,
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          cursor: "pointer",
+          marginBottom: collapsed ? 0 : 6,
         }}
       >
-        {course.name}
+        <div
+          style={{
+            fontSize: 12,
+            fontWeight: 700,
+            background: `linear-gradient(90deg, ${course.color[0]}, ${course.color[1]})`,
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}
+        >
+          {collapsed ? "▸" : "▾"} {course.name}
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          {collapsed && (
+            <div style={{ fontSize: 10, color: "#94a3b8" }}>
+              {done}/{total} <span style={{ color: course.color[1] }}>{Math.round(percent)}%</span>
+            </div>
+          )}
+          <span
+            onClick={(e) => {
+              e.stopPropagation();
+              onDeleteCourse(course.id, course.name);
+            }}
+            style={{
+              fontSize: 12,
+              color: "#475569",
+              cursor: "pointer",
+              padding: "0 2px",
+              opacity: 0.4,
+              transition: "opacity 0.2s",
+            }}
+            onMouseOver={(e) => { e.target.style.opacity = 1; e.target.style.color = "#f87171"; }}
+            onMouseOut={(e) => { e.target.style.opacity = 0.4; e.target.style.color = "#475569"; }}
+          >
+            ✕
+          </span>
+        </div>
       </div>
+
+      {!collapsed && (
+        <>
 
       {/* Progress bar */}
       <ProgressBar
@@ -350,15 +339,15 @@ function CourseCard({ course, onToggle, onAddTask, onDeleteTask }) {
       />
 
       {/* Task list */}
-      <div style={{ marginTop: 20 }}>
+      <div style={{ marginTop: 8 }}>
         {course.tasks.map((task) => (
           <div
             key={task.id}
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 10,
-              padding: "7px 0",
+              gap: 8,
+              padding: "4px 0",
               borderBottom: "1px solid rgba(255,255,255,0.04)",
               cursor: "pointer",
             }}
@@ -367,9 +356,9 @@ function CourseCard({ course, onToggle, onAddTask, onDeleteTask }) {
             {/* Checkbox */}
             <div
               style={{
-                width: 20,
-                height: 20,
-                borderRadius: 6,
+                width: 16,
+                height: 16,
+                borderRadius: 4,
                 border: task.done
                   ? "none"
                   : "2px solid rgba(255,255,255,0.2)",
@@ -384,15 +373,19 @@ function CourseCard({ course, onToggle, onAddTask, onDeleteTask }) {
               }}
             >
               {task.done && (
-                <span style={{ fontSize: 12, color: "#fff", fontWeight: 800 }}>
+                <span style={{ fontSize: 10, color: "#fff", fontWeight: 800 }}>
                   ✓
                 </span>
               )}
             </div>
             {/* Task text */}
             <span
+              onClick={(e) => {
+                e.stopPropagation();
+                onRenameTask(course.id, task.id);
+              }}
               style={{
-                fontSize: 12.5,
+                fontSize: 11,
                 flex: 1,
                 color: task.done ? "#64748b" : "#e2e8f0",
                 textDecoration: task.done ? "line-through" : "none",
@@ -429,8 +422,8 @@ function CourseCard({ course, onToggle, onAddTask, onDeleteTask }) {
       <div
         onClick={() => onAddTask(course.id)}
         style={{
-          marginTop: 8,
-          fontSize: 12,
+          marginTop: 4,
+          fontSize: 10,
           color: "#64748b",
           cursor: "pointer",
           display: "flex",
@@ -444,6 +437,8 @@ function CourseCard({ course, onToggle, onAddTask, onDeleteTask }) {
         <span style={{ fontSize: 16, lineHeight: 1 }}>+</span>
         Add task...
       </div>
+        </>
+      )}
     </div>
   );
 }
@@ -479,6 +474,7 @@ export const render = ({ output, error }) => {
     0
   );
   const overallPercent = totalTasks > 0 ? (totalDone / totalTasks) * 100 : 0;
+  const allTimeCompleted = data.allTimeCompleted || 0;
 
   // ── Handlers (mutate data & save) ──
   function toggleTask(courseId, taskId) {
@@ -492,6 +488,7 @@ export const render = ({ output, error }) => {
     // XP: +20 for completing, -20 for unchecking
     if (task.done) {
       data.xp = (data.xp || 0) + 20;
+      data.allTimeCompleted = (data.allTimeCompleted || 0) + 1;
       // Check level up
       while (data.xp >= xpForLevel((data.level || 1) + 1)) {
         data.level = (data.level || 1) + 1;
@@ -518,16 +515,39 @@ export const render = ({ output, error }) => {
     }
 
     saveData(data);
-    run(`osascript -e 'tell application id "tracesOf.Uebersicht" to refresh widget id "${WIDGET_DIR}-index-jsx"'`);
+    run(`osascript -e 'tell application id "tracesOf.Uebersicht" to refresh widget id "${WIDGET_ID}"'`);
   }
 
   function addTask(courseId) {
+    run(`osascript -e 'display dialog "Enter task name:" default answer "" buttons {"Cancel", "Add"} default button "Add"' -e 'text returned of result'`)
+      .then((taskText) => {
+        taskText = (taskText || "").trim();
+        if (!taskText) return;
+        const course = data.courses.find((c) => c.id === courseId);
+        if (!course) return;
+        const newId = "t" + Date.now();
+        course.tasks.push({ id: newId, text: taskText, done: false });
+        saveData(data);
+        run(`osascript -e 'tell application id "tracesOf.Uebersicht" to refresh widget id "${WIDGET_ID}"'`);
+      })
+      .catch(() => {});
+  }
+
+  function renameTask(courseId, taskId) {
     const course = data.courses.find((c) => c.id === courseId);
     if (!course) return;
-    const newId = "t" + Date.now();
-    course.tasks.push({ id: newId, text: "New task — click to edit", done: false });
-    saveData(data);
-    run(`osascript -e 'tell application id "tracesOf.Uebersicht" to refresh widget id "${WIDGET_DIR}-index-jsx"'`);
+    const task = course.tasks.find((t) => t.id === taskId);
+    if (!task) return;
+    const escaped = task.text.replace(/"/g, '\\"');
+    run(`osascript -e 'display dialog "Edit task:" default answer "${escaped}" buttons {"Cancel", "Save"} default button "Save"' -e 'text returned of result'`)
+      .then((newText) => {
+        newText = (newText || "").trim();
+        if (!newText) return;
+        task.text = newText;
+        saveData(data);
+        run(`osascript -e 'tell application id "tracesOf.Uebersicht" to refresh widget id "${WIDGET_ID}"'`);
+      })
+      .catch(() => {});
   }
 
   function deleteTask(courseId, taskId) {
@@ -535,17 +555,55 @@ export const render = ({ output, error }) => {
     if (!course) return;
     course.tasks = course.tasks.filter((t) => t.id !== taskId);
     saveData(data);
-    run(`osascript -e 'tell application id "tracesOf.Uebersicht" to refresh widget id "${WIDGET_DIR}-index-jsx"'`);
+    run(`osascript -e 'tell application id "tracesOf.Uebersicht" to refresh widget id "${WIDGET_ID}"'`);
   }
 
-  // ── Date display ──
-  const now = new Date();
-  const dateStr = now.toLocaleDateString("en-AU", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  function collapseToggle(courseId) {
+    const course = data.courses.find((c) => c.id === courseId);
+    if (!course) return;
+    course.collapsed = !course.collapsed;
+    saveData(data);
+    run(`osascript -e 'tell application id "tracesOf.Uebersicht" to refresh widget id "${WIDGET_ID}"'`);
+  }
+
+  const COURSE_COLORS = [
+    ["#00f2fe", "#4facfe"],
+    ["#a855f7", "#ec4899"],
+    ["#f97316", "#ef4444"],
+    ["#3b82f6", "#c084fc"],
+    ["#facc15", "#f97316"],
+    ["#10b981", "#14b8a6"],
+  ];
+
+  function addCourse() {
+    run(`osascript -e 'display dialog "Enter course name:" default answer "" buttons {"Cancel", "Add"} default button "Add"' -e 'text returned of result'`)
+      .then((name) => {
+        name = (name || "").trim();
+        if (!name) return;
+        const colorIdx = data.courses.length % COURSE_COLORS.length;
+        data.courses.push({
+          id: "c" + Date.now(),
+          name: name,
+          color: COURSE_COLORS[colorIdx],
+          tasks: [],
+        });
+        saveData(data);
+        run(`osascript -e 'tell application id "tracesOf.Uebersicht" to refresh widget id "${WIDGET_ID}"'`);
+      })
+      .catch(() => {});
+  }
+
+  function deleteCourse(courseId, courseName) {
+    const escaped = courseName.replace(/"/g, '\\"');
+    run(`osascript -e 'display dialog "Delete \"${escaped}\"? This cannot be undone." buttons {"Cancel", "Delete"} default button "Cancel"' -e 'button returned of result'`)
+      .then((btn) => {
+        if ((btn || "").trim() !== "Delete") return;
+        data.courses = data.courses.filter((c) => c.id !== courseId);
+        saveData(data);
+        run(`osascript -e 'tell application id "tracesOf.Uebersicht" to refresh widget id "${WIDGET_ID}"'`);
+      })
+      .catch(() => {});
+  }
 
   return (
     <div>
@@ -555,25 +613,48 @@ export const render = ({ output, error }) => {
           background: "rgba(15, 23, 42, 0.85)",
           backdropFilter: "blur(20px)",
           WebkitBackdropFilter: "blur(20px)",
-          borderRadius: 16,
-          padding: 16,
-          marginBottom: 12,
+          borderRadius: 12,
+          padding: 10,
+          marginBottom: 8,
           border: "1px solid rgba(255,255,255,0.06)",
           boxShadow: "0 4px 24px rgba(0,0,0,0.3)",
         }}
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div>
-            <div style={{ fontSize: 20, fontWeight: 800, marginBottom: 2 }}>
-              📖 Study Tracker
+            <div style={{ fontSize: 15, fontWeight: 800, marginBottom: 1 }}>
+              Study Tracker
             </div>
-            <div style={{ fontSize: 11, color: "#64748b" }}>{dateStr}</div>
           </div>
-          <KnowledgeTree percent={overallPercent} />
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 6 }}>
+            <KnowledgeTree percent={overallPercent} />
+            <div
+              onClick={addCourse}
+              style={{
+                width: 22,
+                height: 22,
+                borderRadius: 6,
+                background: "rgba(255,255,255,0.08)",
+                border: "1px solid rgba(255,255,255,0.12)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                fontSize: 14,
+                color: "#94a3b8",
+                lineHeight: 1,
+                flexShrink: 0,
+              }}
+              onMouseOver={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.15)"; e.currentTarget.style.color = "#e2e8f0"; }}
+              onMouseOut={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; e.currentTarget.style.color = "#94a3b8"; }}
+              title="Add course"
+            >
+              +
+            </div>
+          </div>
         </div>
 
         <StatsHeader
-          streakDays={data.streakDays || 0}
           xp={data.xp || 0}
           level={data.level || 1}
         />
@@ -581,12 +662,15 @@ export const render = ({ output, error }) => {
         <Badges achievements={data.achievements || []} />
 
         {/* Overall progress */}
-        <div style={{ marginTop: 4 }}>
+        <div style={{ marginTop: 2 }}>
           <ProgressBar
             percent={overallPercent}
             gradient={["#6366f1", "#ec4899"]}
-            label={`Overall: ${totalDone} of ${totalTasks} tasks (all courses)`}
+            label={`Overall: ${totalDone}/${totalTasks} tasks`}
           />
+        </div>
+        <div style={{ fontSize: 9, color: "#64748b", marginTop: 4, textAlign: "right" }}>
+          All-time completed: <span style={{ color: "#a78bfa", fontWeight: 600 }}>{allTimeCompleted}</span>
         </div>
       </div>
 
@@ -598,20 +682,13 @@ export const render = ({ output, error }) => {
           onToggle={toggleTask}
           onAddTask={addTask}
           onDeleteTask={deleteTask}
+          onRenameTask={renameTask}
+          onCollapseToggle={collapseToggle}
+          onDeleteCourse={deleteCourse}
         />
       ))}
 
-      {/* Footer */}
-      <div
-        style={{
-          textAlign: "center",
-          fontSize: 10,
-          color: "#334155",
-          padding: "8px 0 4px",
-        }}
-      >
-        Click tasks to toggle • Edit data.json to customize courses
-      </div>
+
     </div>
   );
 };
