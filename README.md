@@ -6,7 +6,7 @@ The widget is fully interactive — I can check off tasks as I complete them, ad
 
 > The tasks shown in the preview are demo data for demonstration purposes. I have done them, I swear!
 
-![Widget Preview](screenshot.png)
+![Widget Preview](study-tracker.widget/screenshot.png)
 
 ## Key Features
 
